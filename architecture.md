@@ -1,105 +1,118 @@
-Gonne be theroy class !!!!! Don't be sad make your face sleepy -> joke 
+# 🚀 ScyllaDB Concepts - A Fun Theory Class!
 
-i"m gonne try to take it intresting
+> **Gonna be a theory class!!!** Don't be bored, or make your face sleepy 😴 -> *joke*
 
-General concepts:
+I'm gonna try to make this interesting! 😆
 
-Replication:
-making multiples copies of data spread across nodes to prevent data loss
+---
 
-sharding:
-dividing data into smaller parts (shards) and storing across various nodes
+## 🛠 General Concepts:
 
-these two are database techniques for which used for improving scalability, availablity, and fault tolerance
+### 🔁 Replication:
+Making multiple copies of data spread across nodes to **prevent data loss**.
 
-node -> a database instance which is used to store the data 
+### 🔀 Sharding:
+Dividing data into smaller parts (**shards**) and storing across various nodes.
 
-cluster -> a group of node to form a cluster -> store and replicate data 
+💡 *These two are database techniques used for improving scalability, availability, and fault tolerance.*
 
+### 📦 Node:
+A **database instance** used to store the data.
 
-Scylla db Architecture:
-1. it is a shared nothing architecture which means there is no single 
+### 🏢 Cluster:
+A **group of nodes** forming a cluster to store and replicate data.
 
+---
 
+## 🏗️ ScyllaDB Architecture:
 
+![Architecture Diagram](/images/architecture.png)
 
-Lets go one by one 
+### 1️⃣ Shared Nothing Architecture
+ScyllaDB is a **shared nothing architecture**, meaning there is **no single point of failure**.
 
-Shared nothing Acrhitecture means user can be able to create aa single node or multiple node
-node s nothing but database instances, lets talk about both single and multiple node 
+### 🔥 What Does Shared Nothing Mean?
+Users can create either a **single node** or **multiple nodes**.
 
-In single node:
-the entire data is stored on that node 
-using sharding technique data is spread across no.of available cpu cores 
-since this is single node no replication happens here 
+#### Single Node:
+- Entire data is stored **on that node**.
+- Using **sharding**, data is spread across the **available CPU cores**.
+- Since this is a single node, **no replication happens**.
 
-IN mUltiple nodes :
+#### Multiple Nodes (Example: 3 Nodes):
+- Data is **partitioned and stored across nodes**.
+- Each node **manages its own data**.
+- **Sharding still happens within a node.**
+- When replication is enabled, copies of data (replicas) are stored across nodes for **higher availability and performance**.
+- **No shared memory, CPU, or disk space. Each node is independent.**
 
-lets assume user create aa 3 nodes:
+---
 
-now data is spread across partitioned and stored across three nodes
-each nodes has is own set of data need to be managed 
-same as single node using sharding technique data is sharding within its node 
+## 🧩 Sharding:
 
-when creating aa replication the original data is stay inside the assigned node but the copies of data which is replica whoch will be shared 
-across the all node for higher availability and higher perfromance 
+💡 *We already know that sharding splits data into smaller chunks.*
 
-here shared nothing architetcure is said by there is no shared memory, cpu, disk space each node has it own 
+### How Does Sharding Work?
+Imagine we have **10 rows** to store in a **single node**.
 
+❌ Instead of storing all **data in a single CPU core**,
+✅ We **split** data into **10 chunks** and store them across **different cores**.
 
-TOO many therory right ?
-just few more cocepts then we will go into actually examples:
+💡 *Why is this helpful?*
+If a user asks for **one row**, instead of scanning the entire table, we can just fetch the row **directly from the specific core**. 🔥
 
-then comes Sharding:
-sharding we already knows split data into smaller data (shards) 
+### Example:
+Imagine we have **10 tasks**. We know we need to **shard** the data. But **how?** 🤔
 
-how sharding works:
-here lets take aa example:
-imagine we have 10 rows to store we hvaing are using single node 
+1️⃣ Identify the **Primary Key** – This is a **unique identifier** for each row. In our case, `_id` is unique.
+2️⃣ Convert the **Primary Key** into a **Token** (using hashing techniques).
+3️⃣ ScyllaDB decides **which core stores which data** based on **token range** and **available cores**.
+4️⃣ **Sharding is fully handled by ScyllaDB!** 🎉
 
-instead of stroing all 1 data in single core in cpu we are diving 1 data into 10 chunks 
-store each chunks into various part of core 
+### Visual Representation of sharding:
+![Architecture Diagram](/images/sharding.png)
 
-why it is helpful if user ask for one row why we need to scan the entire table to return 
-we are storing each row in various part of core we look for that one row in core and return 
+---
 
-Understands too many theroy again we go by exmaple:
-imagine we have 10 tasks -> we know we need to shared the data 
-ok how we shared?
-we need to find the primary key -> new word (primary key is value which is unique for each row)
-for those data there is key called _id which is unique for each row in table 
+## 🔁 Replication:
+Replication ensures **higher availability** and **fault tolerance** by storing **multiple copies** of data across nodes.
 
-now primary key is converting into a token (using some hashing technique)
-these token will helps scylladb decide which core will store the data 
+### Key Components of Replication:
 
-based on the token range and available core the data is spread across the core 
+#### 1️⃣ **Replication Factor**
+The number of copies stored across different nodes.
+If one node **fails**, other nodes serve the data.
 
-these entire sharding process is taken care by scyllaDB 
-we will see more exmaples and relaizes hwo it works internally for now lets understand the cocnrpts 
+#### 2️⃣ **Replication Strategies**
+- **Simple Strategy** 🏢
+  - Contains **only one data center**.
+  - Data is replicated across **all nodes** in that cluster.
 
-Replication:
-replication enusres higher availablity and fault tolerance by storeies a multiple copies of data acorss various nodes 
+- **Network Topology Strategy** 🌍
+  - **Multiple data centers**, each with its own cluster.
+  - Each cluster contains **multiple nodes**.
+  - We can specify **different replication factors** for each data center.
 
+📌 *Example:* Imagine we have a **data center in the USA** and one in **India**.
+- **USA DC** → **4 replicas**
+- **India DC** → **3 replicas**
 
+Now, data is **replicated separately** in each location based on the required **availability & redundancy**.
 
-Key componenet of replication 
-replication factor, replication strategies
+---
 
-replication factor -> 
-Already we know we have aa data in single node we ahve aa option called replication factor which is no determines teh no of copies stored across the other nodes 
-due to some reason if one node faials other node serve that data 
+## 🔄 Consistency Levels:
 
-replication stragtegies: 
-simple strategy, network topology 
+We have made copies of data and spread them across nodes, right? Now, we tell ScyllaDB how many copies it refers to during **reads/writes**.
 
-simple staregty:
-badsicllay it contains only one data center (here data center determines aa cluster of dtaabse)
-iamgine aa cluster 1 data center conatins one cluster and cluster conatins multiple nodes 
-replication is done maong various all nodes 
+### Types of Consistency Levels:
 
+- **ONE** → Fastest, but accuracy is low because it refers to only one copy.
+- **QUORUM** → A balance between speed and accuracy.
+- **ALL** → Slowest, but ensures data correctness by referring to all copies.
 
-network topologty is we can have multipel dta center each data center has it own cluster and each cluster has aa mutplie nodes herw 
-can we can giev replication for each center 
+---
 
-eg: imagine we have data cenetr in USA & india we can determine teh replication factore USA DC around 4 replica 
-and for INDIA DC around 3 rpelica 
+ **TOO MUCH THEORY, RIGHT?!**
+Let's jump into **practical examples**. 🚀🔥
+next -> CQL.md file
